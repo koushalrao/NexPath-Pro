@@ -1,0 +1,22 @@
+node_modules/
+.env
+serviceAccount.json
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+server/.env
+
+# Firebase credentials
+server/serviceAccount.json
+
+# Build output
+client/dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vite cache
+client/.vite/
