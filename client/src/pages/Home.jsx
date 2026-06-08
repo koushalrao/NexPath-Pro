@@ -17,7 +17,6 @@ export default function Home() {
     try {
       const result  = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
-
       const res = await api.post("/auth/google-login", { idToken });
       localStorage.setItem("nexpath_token", res.data.token);
       setToken(res.data.token);
@@ -37,8 +36,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
-
-      {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
 
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs mb-8">
@@ -52,7 +49,7 @@ export default function Home() {
         </h1>
 
         <p className="text-gray-400 text-lg max-w-xl mb-10">
-          NexPath helps you find internships, discover hackathons, review your resume with AI, and get career advice — all in one place.
+          Mentoro helps you find internships, discover hackathons, review your resume with AI, and get career advice — all in one place.
         </p>
 
         <button
@@ -66,7 +63,6 @@ export default function Home() {
 
         {error && <p className="mt-4 text-red-400 text-sm">{error}</p>}
 
-        {/* Feature cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 max-w-4xl w-full">
           {[
             { icon: "💼", label: "Live Internships", desc: "Real remote jobs updated daily" },
