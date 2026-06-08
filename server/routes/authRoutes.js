@@ -6,30 +6,29 @@ const User    = require("../models/User");
 const path    = require("path");
 
 if (!admin.apps.length) {
-  const serviceAccount = require(path.join(__dirname, "../serviceAccount.json"));
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+  } else {
+    const serviceAccount = require(path.join(__dirname, "../serviceAccount.json"));
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+  }
 }
 
 // POST /api/auth/google-login
-// Body: { idToken } — the Firebase ID token from the client
 router.post("/google-login", async (req, res) => {
   try {
     const { idToken } = req.body;
 
-    // Verify with Firebase Admin
     const decoded = await admin.auth().verifyIdToken(idToken);
     const { uid, name, email, picture } = decoded;
 
-    // Upsert user in MongoDB
     let user = await User.findOneAndUpdate(
       { firebaseUid: uid },
       { name, email, photoURL: picture },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    // Issue our own JWT
     const token = jwt.sign(
       { userId: user._id, firebaseUid: uid, email },
       process.env.JWT_SECRET,
